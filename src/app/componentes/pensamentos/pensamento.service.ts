@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Pensamento } from './pensamento';
 import { Observable } from 'rxjs';
 
@@ -15,8 +15,16 @@ export class PensamentoService {
   constructor(private http: HttpClient) { }
 
   //Observable é uma classe do  RXJS que fornece suporte para programação assíncrona.
-  listar(): Observable<Pensamento[]>{
-    return this.http.get<Pensamento[]>(this.API)
+  listar(pagina: number): Observable<Pensamento[]>{
+
+    const itensPorPagina = 6;
+
+    let params = new HttpParams().set("_page", pagina).set("_limit", itensPorPagina)
+
+    //GET /posts _page=78 _limit=20
+    // return this.http.get<Pensamento[]>(`${this.API}?_page=${pagina}&_limit=${itensPorPagina}`)
+
+    return this.http.get<Pensamento[]>(this.API, { params: params })
   }
 
   criar(pensamento: Pensamento): Observable<Pensamento> {    

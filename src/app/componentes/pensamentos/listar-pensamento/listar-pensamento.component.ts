@@ -31,6 +31,8 @@ export class ListarPensamentoComponent implements OnInit {
     
   ]  
 
+  paginaAtual: number = 1
+
   constructor(private service: PensamentoService) { }
 
   /*ngOnInit faz parte do ciclo de vida do componente, toda lógica que deve ser executada
@@ -39,7 +41,7 @@ export class ListarPensamentoComponent implements OnInit {
     Com o subscribe o observable sabe que presisa enviar notificações para o componente.
   */ 
   ngOnInit(): void {
-    this.service.listar().subscribe((listaPensamentos) => {
+    this.service.listar(this.paginaAtual).subscribe((listaPensamentos) => {
       this.listarPensamentos = listaPensamentos
     })
   }  
