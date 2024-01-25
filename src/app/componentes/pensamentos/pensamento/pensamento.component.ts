@@ -21,8 +21,6 @@ export class PensamentoComponent implements OnInit {
   constructor(private service: PensamentoService) { }
 
   ngOnInit(): void {
-    console.log("O pensamento é: ",  this.pensamento);
-
   }
 
   larguraPensamento(): string {
