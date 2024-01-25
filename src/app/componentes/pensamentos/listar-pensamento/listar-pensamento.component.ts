@@ -13,6 +13,8 @@ export class ListarPensamentoComponent implements OnInit {
 
   haMaisPensamentos: boolean = true;
 
+  filtro: string = ' '
+
   paginaAtual: number = 1;
 
   constructor(private service: PensamentoService) { }
@@ -23,18 +25,28 @@ export class ListarPensamentoComponent implements OnInit {
     Com o subscribe o observable sabe que presisa enviar notificações para o componente.
   */ 
   ngOnInit(): void {
-    this.service.listar(this.paginaAtual).subscribe((listaPensamentos) => {
+    this.service.listar(this.paginaAtual, this.filtro).subscribe((listaPensamentos) => {
       this.listarPensamentos = listaPensamentos
     })
   }  
 
   carregarMaisPensamentos(){
-    this.service.listar(++this.paginaAtual)
+    this.service.listar(++this.paginaAtual, this.filtro)
     .subscribe(listarPensamentos => {
       this.listarPensamentos.push(...listarPensamentos)
       if(this.listarPensamentos.map(it => Number(it.id) === 10)){        
         this.haMaisPensamentos = false;
       }
+    })
+  }
+
+  pesquisarPensamentos(){
+
+    this.haMaisPensamentos = true;
+    this.paginaAtual = 1;
+    this.service.listar(this.paginaAtual, this.filtro)
+    .subscribe((listaPensamentos) =>{
+      this.listarPensamentos = listaPensamentos
     })
   }
 }
