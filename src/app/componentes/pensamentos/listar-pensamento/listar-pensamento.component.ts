@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Pensamento } from '../pensamento';
 import { PensamentoService } from '../pensamento.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-listar-pensamento',
@@ -15,9 +16,17 @@ export class ListarPensamentoComponent implements OnInit {
 
   filtro: string = ' '
 
+  favoritos: boolean = false
+
   paginaAtual: number = 1;
 
-  constructor(private service: PensamentoService) { }
+  listaFavoritos: Pensamento[] = []
+
+  //Para não recarregar toda a página use router
+  constructor(
+    private service: PensamentoService,
+    private router: Router
+    ) { }
 
   /*ngOnInit faz parte do ciclo de vida do componente, toda lógica que deve ser executada
     junto com o componente deve ficar dentro do ngOnInit.
@@ -25,13 +34,13 @@ export class ListarPensamentoComponent implements OnInit {
     Com o subscribe o observable sabe que presisa enviar notificações para o componente.
   */ 
   ngOnInit(): void {
-    this.service.listar(this.paginaAtual, this.filtro).subscribe((listaPensamentos) => {
+    this.service.listar(this.paginaAtual, this.filtro, this.favoritos = false).subscribe((listaPensamentos) => {
       this.listarPensamentos = listaPensamentos
     })
   }  
 
   carregarMaisPensamentos(){
-    this.service.listar(++this.paginaAtual, this.filtro)
+    this.service.listar(++this.paginaAtual, this.filtro, this.favoritos = false)
     .subscribe(listarPensamentos => {
       this.listarPensamentos.push(...listarPensamentos)
       if(this.listarPensamentos.map(it => Number(it.id) === 10)){        
@@ -40,22 +49,34 @@ export class ListarPensamentoComponent implements OnInit {
     })
   }
 
+  //Para não recarregar a pagina inteira utilize essa tecnica .
+  recarregarComponente(){
+    this.favoritos = false
+    this.paginaAtual = 1
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false
+    this.router.onSameUrlNavigation = 'reload'
+    this.router.navigate([this.router.url])
+  }
+
+
   pesquisarPensamentos(){
 
     this.haMaisPensamentos = true;
     this.paginaAtual = 1;
-    this.service.listar(this.paginaAtual, this.filtro)
+    this.service.listar(this.paginaAtual, this.filtro, this.favoritos = false)
     .subscribe((listaPensamentos) =>{
       this.listarPensamentos = listaPensamentos
     })
   }
 
   listarFavoritos(){
+    this.favoritos = true
     this.haMaisPensamentos = true
     this.paginaAtual = 1
-    this.service.listarPensamentosFavoritos(this.paginaAtual, this.filtro)
-    .subscribe((listaPensamentosFavoritos) => {
+    this.service.listar(this.paginaAtual, this.filtro, this.favoritos)
+    .subscribe((listaPensamentosFavoritos) => {      
       this.listarPensamentos = listaPensamentosFavoritos
+      this.listaFavoritos = listaPensamentosFavoritos
     })
   }
 }

@@ -15,7 +15,7 @@ export class PensamentoService {
   constructor(private http: HttpClient) { }
 
   //Observable é uma classe do  RXJS que fornece suporte para programação assíncrona.
-  listar(pagina: number, filtro: string): Observable<Pensamento[]>{
+  listar(pagina: number, filtro: string, favoritos: boolean,): Observable<Pensamento[]>{
 
     const itensPorPagina = 6;
 
@@ -30,23 +30,30 @@ export class PensamentoService {
     //GET /posts _page=78 _limit=20
     // return this.http.get<Pensamento[]>(`${this.API}?_page=${pagina}&_limit=${itensPorPagina}`)
 
-    return this.http.get<Pensamento[]>(this.API, { params: params })
-  }
-
-  listarPensamentosFavoritos(pagina: number, filtro: string): Observable<Pensamento[]>{
-    const itensPorPagina = 6;
-
-    let params = new HttpParams()
-    .set("_page", pagina)
-    .set("_limit", itensPorPagina)
-    .set("_favorito", true)
-
-    if(filtro.trim().length > 2){
-      params = params.set("conteudo", filtro)
+    if(favoritos){
+      params = params.set("favorito", true)
     }
 
+    console.log(params);
+    
+
     return this.http.get<Pensamento[]>(this.API, { params: params })
   }
+
+  // listarPensamentosFavoritos(pagina: number, filtro: string): Observable<Pensamento[]>{
+  //   const itensPorPagina = 6;
+
+  //   let params = new HttpParams()
+  //   .set("_page", pagina)
+  //   .set("_limit", itensPorPagina)
+  //   .set("_favorito", true)
+
+  //   if(filtro.trim().length > 2){
+  //     params = params.set("conteudo", filtro)
+  //   }
+
+  //   return this.http.get<Pensamento[]>(this.API, { params: params })
+  // }
 
 
   criar(pensamento: Pensamento): Observable<Pensamento> {    
