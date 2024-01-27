@@ -11,16 +11,12 @@ import { Router } from '@angular/router';
 export class ListarPensamentoComponent implements OnInit {
 
   listarPensamentos: Pensamento[] = [];
-
   haMaisPensamentos: boolean = true;
-
   filtro: string = ' '
-
   favoritos: boolean = false
-
   paginaAtual: number = 1;
-
   listaFavoritos: Pensamento[] = []
+  titulo: string = 'Meu Mural'
 
   //Para não recarregar toda a página use router
   constructor(
@@ -53,8 +49,8 @@ export class ListarPensamentoComponent implements OnInit {
   recarregarComponente(){
     this.favoritos = false
     this.paginaAtual = 1
-    this.router.routeReuseStrategy.shouldReuseRoute = () => false
-    this.router.onSameUrlNavigation = 'reload'
+    // this.router.routeReuseStrategy.shouldReuseRoute = () => false
+    // this.router.onSameUrlNavigation = 'reload'
     this.router.navigate([this.router.url])
   }
 
@@ -70,6 +66,7 @@ export class ListarPensamentoComponent implements OnInit {
   }
 
   listarFavoritos(){
+    this.titulo = 'Meus Favoritos'
     this.favoritos = true
     this.haMaisPensamentos = true
     this.paginaAtual = 1
